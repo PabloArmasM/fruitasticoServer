@@ -1,8 +1,14 @@
 const express = require('express');
 const otro = require('./otro');
 const PORT = 3000;
+const fs = require('fs');
 
-const app = express();
+const app = express(),
+    bodyParser = require('body-parser'),
+    cors = require('cors');
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
 var admin = require("firebase-admin");
@@ -24,10 +30,15 @@ admin.initializeApp(
 let db = admin.firestore();
 
 
+function readDataFromJSONFile(){
+  return fs.readFileSync('./data/fruit.json');
+}
 
 //HTTP server
-app.get('/getFruitCollection', function(req, res){
-  db.collection('fruit').get()
+app.post('/getFruitCollection', function(req, res){
+  //res.send(readDataFromJSONFile());
+  var requestObject = JSON.parse(Object.keys(req.body)[0]);
+  db.collection(requestObject.collection).get()
   .then(snap => {
     var JSONdata = {};
     for (var i = 0; i < snap.size; i++) {
