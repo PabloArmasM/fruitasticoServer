@@ -17,12 +17,6 @@ var serviceAccount = require("./fruitastico-6db6e-firebase-adminsdk-tyf3d-2e7b80
 const functions = require('firebase-functions');
 
 
-
-/*admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://fruitastico-6db6e.firebaseio.com"
-});*/
-
 admin.initializeApp(
   {credential: admin.credential.cert(serviceAccount)}
 );
@@ -41,15 +35,30 @@ app.post('/getFruitCollection', function(req, res){
   db.collection(requestObject.collection).get()
   .then(snap => {
     var JSONdata = {};
-    for (var i = 0; i < snap.size; i++) {
-      JSONdata[snap.docs[i].id] = snap.docs[i].data();
-    }
+    snap.forEach(element => {
+      JSONdata[element.id] = element.data();
+    });
     res.send(JSON.stringify(JSONdata));
   })
   .catch((err) => {
     console.log('Error getting documents', err);
     res.send("A ocurrido un error a la hora de obtener los documentos");
   });
+});
+
+
+app.post('/getSpecificElement', function(req, res){
+    var requestObject = JSON.parse(Object.keys(req.body)[0]);
+    db.collection(requestObject.collection).doc(requestObject._id).get().then(snap =>{
+      if (!snap.exists) {
+        console.log("No such document");
+      }else{
+        res.send(JSON.stringify(snap.data()));
+      }
+    }).catch((err) => {
+      console.log('Error getting documents', err);
+      res.send("A ocurrido un error a la hora de obtener los documentos");
+    });
 });
 
 app.use('/source/css',express.static(__dirname +'/source/css'));
