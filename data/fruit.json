@@ -1,0 +1,28 @@
+{
+  "fruits" : [
+    {
+      "name" : "Manzana",
+      "image" : "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/265px-Red_Apple.jpg",
+      "price" : 2.54,
+      "description" : "La manzana es el fruto comestible de la especie Malus domestica, llamada comúnmente manzano. Es una fruta pomácea de forma redonda y sabor más o menos dulce, dependiendo de la variedad."
+    },
+    {
+      "name" : "Plátano",
+      "image" : "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Bananas_white_background_DS.jpg/320px-Bananas_white_background_DS.jpg",
+      "price" : 0.68,
+      "description" : "Es un fruto con cualidades variables en tamaño (10cm), color y firmeza, alargado, generalmente curvado y carnoso, rico en almidón cubierto con una cáscara, que puede ser verde, amarilla, roja, púrpura o marrón cuando está madura. Los frutos crecen en piñas que cuelgan de la parte superior de la planta. Casi todos los plátanos en la actualidad son frutos estériles que no producen semillas fructificantes y provienen de dos especies silvestres: Musa acuminata y Musa balbisiana. El nombre científico de la mayoría de los plátanos cultivados es Musa × paradisiaca, el híbrido Musa acuminata × M. balbisiana, con distintas denominaciones var. o cultivares, dependiendo de su constitución genómica."
+    },
+    {
+      "name" : "Uvas",
+      "image" : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Table_grapes_on_white.jpg/320px-Table_grapes_on_white.jpg",
+      "price" : 1.25,
+      "description" : "La uva es una fruta obtenida de la vid. Las uvas vienen en racimos, son pequeñas y dulces. Se comen frescas o se utilizan para producir agraz, mosto, vino, brandy, vinagre y pisco."
+    },
+    {
+      "name" : "Piña",
+      "image" : "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pineapple_and_cross_section.jpg/286px-Pineapple_and_cross_section.jpg",
+      "price" : 4.5,
+      "description" : "Ananas comosus, la piña, el ananá, ananás o matzatli, es una planta perenne de la familia de las bromeliáceas, nativa de América del Sur. Esta especie, de escaso porte y con hojas duras y lanceoladas desde la cola hasta 1 m de largo, fructifica una vez cada año produciendo un único fruto fragante y dulce, muy apreciado en gastronomía."
+    }
+  ]
+}
