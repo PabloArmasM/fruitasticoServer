@@ -61,7 +61,17 @@ app.post('/getSpecificElement', function(req, res){
     });
 });
 
-app.use('/source/css',express.static(__dirname +'/source/css'));
+
+app.post('/setNewUser', function(req, res){
+  var requestObject = JSON.parse(Object.keys(req.body)[0]);
+  db.collection(requestObject.collection).doc(requestObject._id).set(requestObject.data).then(snap =>{
+    res.send("Usuario creado satisfactoriamente");
+  }).catch(err =>{
+    console.log(err);
+    res.send(-1);
+  });
+});
+
 
 
 app.listen(PORT, function(){
