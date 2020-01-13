@@ -3,6 +3,7 @@ const otro = require('./otro');
 const PORT = 3000;
 const fs = require('fs');
 const uuid = require('uuid-random');
+const nodemailer = require('nodemailer');
 
 const app = express(),
     bodyParser = require('body-parser'),
@@ -10,6 +11,14 @@ const app = express(),
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'fruitasticoapp@gmail.com',
+    pass: 'fruitastico1'
+  }
+});
 
 function readDataFromJSONFile(file){
   return JSON.parse(fs.readFileSync('./data/'+file+'.json'));
@@ -60,24 +69,34 @@ app.post('/setNewUser', async function(req, res){
 app.post('/setOrders', function(req, res){
   var requestObject = JSON.parse(Object.keys(req.body)[0]);
   fs.stat('./data/'+requestObject.collection+'.json', function(err, stats) {
+    var orderId = uuid()
     if(stats != undefined){
       console.log(true);
       var jsonResult = readDataFromJSONFile(requestObject.collection);
       console.log(jsonResult);
-      if(requestObject._id in jsonResult){
-        jsonResult[requestObject._id]['orders'][jsonResult[requestObject._id]['orders'].length] = requestObject.data[0];
-        writeData(requestObject.collection, JSON.stringify(jsonResult));
-
-      }else{
-        jsonResult[requestObject._id] = {orders : requestObject.data};
-        writeData(requestObject.collection, JSON.stringify(jsonResult));
-      }
+      jsonResult[requestObject._id][orderId] = requestObject.data;
+      writeData(requestObject.collection, JSON.stringify(jsonResult));
     }else{
       console.log(false);
+      var firstPart ={};
       var data = {};
-      data[requestObject._id] = {orders :requestObject.data};
+      firstPart[orderId] = requestObject.data;
+      data[requestObject._id] = firstPart;
       writeData(requestObject.collection, JSON.stringify(data));
     }
+    var mailOptions = {
+      from: 'fruitasticoapp@gmail.com',
+      to: requestObject.email,
+      subject: 'Pedido realizado con éxito',
+      text: 'El pedido '+ idOrder+' se ha realizado con exito'
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
   });
 });
 

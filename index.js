@@ -2,6 +2,9 @@ const express = require('express');
 const otro = require('./otro');
 const PORT = 3000;
 const fs = require('fs');
+const uuid = require('uuid-random');
+const nodemailer = require('nodemailer');
+const functions = require('firebase-functions');
 
 const app = express(),
     bodyParser = require('body-parser'),
@@ -14,7 +17,14 @@ app.use(bodyParser.json());
 var admin = require("firebase-admin");
 var serviceAccount = require("./fruitastico-6db6e-firebase-adminsdk-tyf3d-2e7b807e64.json");
 
-const functions = require('firebase-functions');
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'fruitasticoapp@gmail.com',
+    pass: 'fruitastico1'
+  }
+});
+
 
 
 admin.initializeApp(
@@ -76,7 +86,24 @@ app.post('/setNewUser', function(req, res){
 app.post('/setOrders', function(req, res){
   var requestObject = JSON.parse(Object.keys(req.body)[0]);
   console.log(requestObject);
-  db.collection(requestObject.collection).doc(requestObject._id).set({orders : requestObject.data}).then(snap =>{
+  var data = {};
+  var idOrder = uuid();
+  data[idOrder] = requestObject.data;
+  db.collection(requestObject.collection).doc(requestObject._id).set(data).then(snap =>{
+    var mailOptions = {
+      from: 'fruitasticoapp@gmail.com',
+      to: requestObject.email,
+      subject: 'Pedido realizado con éxito',
+      text: 'El pedido '+ idOrder+' se ha realizado con exito'
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
     res.send({message:"Datos almacenados satisfactoriamente"});
   }).catch(err =>{
     console.log(err);
