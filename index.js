@@ -57,7 +57,7 @@ app.post('/getSpecificElement', function(req, res){
       }
     }).catch((err) => {
       console.log('Error getting documents', err);
-      res.send("A ocurrido un error a la hora de obtener los documentos");
+      res.send({message:"A ocurrido un error a la hora de obtener los documentos"});
     });
 });
 
@@ -65,12 +65,25 @@ app.post('/getSpecificElement', function(req, res){
 app.post('/setNewUser', function(req, res){
   var requestObject = JSON.parse(Object.keys(req.body)[0]);
   db.collection(requestObject.collection).doc(requestObject._id).set(requestObject.data).then(snap =>{
-    res.send("Usuario creado satisfactoriamente");
+    res.send({message:"Usuario creado satisfactoriamente"});
   }).catch(err =>{
     console.log(err);
-    res.send(-1);
+    res.send({message:-1});
   });
 });
+
+
+app.post('/setOrders', function(req, res){
+  var requestObject = JSON.parse(Object.keys(req.body)[0]);
+  console.log(requestObject);
+  db.collection(requestObject.collection).doc(requestObject._id).set({orders : requestObject.data}).then(snap =>{
+    res.send({message:"Datos almacenados satisfactoriamente"});
+  }).catch(err =>{
+    console.log(err);
+    res.send({message:-1});
+  });
+});
+
 
 
 
