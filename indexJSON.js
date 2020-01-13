@@ -88,7 +88,7 @@ app.post('/setOrders', function(req, res){
       from: 'fruitasticoapp@gmail.com',
       to: requestObject.email,
       subject: 'Pedido realizado con éxito',
-      text: 'El pedido '+ idOrder+' se ha realizado con exito'
+      text: 'El pedido '+ orderId+' se ha realizado con exito'
     };
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
@@ -101,9 +101,17 @@ app.post('/setOrders', function(req, res){
 });
 
 
+app.post('/getGroupOfElements', function(req, res){
+  var requestObject = JSON.parse(Object.keys(req.body)[0]);
+  console.log("antes del horror");
+  var jsonFile = readDataFromJSONFile(requestObject.collection);
+  console.log("SE HA LEIDO");
+  console.log(jsonFile);
+  res.send(jsonFile[requestObject._id]);
+});
+
 
 
 app.listen(PORT, function(){
-  otro.ykc();
   console.log("Server listening on port: " + PORT);
 });

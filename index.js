@@ -89,30 +89,73 @@ app.post('/setOrders', function(req, res){
   var data = {};
   var idOrder = uuid();
   data[idOrder] = requestObject.data;
-  db.collection(requestObject.collection).doc(requestObject._id).set(data).then(snap =>{
-    var mailOptions = {
-      from: 'fruitasticoapp@gmail.com',
-      to: requestObject.email,
-      subject: 'Pedido realizado con éxito',
-      text: 'El pedido '+ idOrder+' se ha realizado con exito'
-    };
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
 
-    res.send({message:"Datos almacenados satisfactoriamente"});
-  }).catch(err =>{
-    console.log(err);
-    res.send({message:-1});
-  });
+  var collection = db.collection(requestObject.collection).doc(requestObject._id);
+  collection.get().then(snapshot =>{
+    if(snapshot.exists){
+      console.log("existe");
+      collection.update(data).then(snap =>{
+        var mailOptions = {
+          from: 'fruitasticoapp@gmail.com',
+          to: requestObject.email,
+          subject: 'Pedido realizado con éxito',
+          text: 'El pedido '+ idOrder+' se ha realizado con exito'
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+
+        res.send({message:"Datos almacenados satisfactoriamente"});
+      }).catch(err =>{
+        console.log(err);
+        res.send({message:-1});
+      });
+    }else{
+      collection.set(data).then(snap =>{
+        var mailOptions = {
+          from: 'fruitasticoapp@gmail.com',
+          to: requestObject.email,
+          subject: 'Pedido realizado con éxito',
+          text: 'El pedido '+ idOrder+' se ha realizado con exito'
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+
+        res.send({message:"Datos almacenados satisfactoriamente"});
+      }).catch(err =>{
+        console.log(err);
+        res.send({message:-1});
+      });
+    }
+  })
 });
 
 
-
+app.post('/getGroupOfElements', function(req, res){
+    var requestObject = JSON.parse(Object.keys(req.body)[0]);
+    db.collection(requestObject.collection).doc(requestObject._id).get().then(snap =>{
+      if (!snap.exists) {
+        console.log("No such document");
+      }else{
+        var JSONdata = {};
+        snap.forEach(element => {
+          JSONdata[element.id] = element.data();
+        });
+      }
+    }).catch((err) => {
+      console.log('Error getting documents', err);
+      res.send({message:"A ocurrido un error a la hora de obtener los documentos"});
+    });
+});
 
 app.listen(PORT, function(){
   otro.ykc();
